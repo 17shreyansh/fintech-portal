@@ -16,6 +16,7 @@ const PlanManagement = () => {
   const [editingPlan, setEditingPlan] = useState(null);
   const [planForm] = Form.useForm();
   const [activeTab, setActiveTab] = useState('all');
+  const [calculatedReturn, setCalculatedReturn] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -34,35 +35,71 @@ const PlanManagement = () => {
     }
   };
 
+  const calculateTotalReturn = (dailyProfit, duration) => {
+    if (!dailyProfit || !duration?.value || !duration?.unit) return 0;
+    
+    let totalDays = 0;
+    switch(duration.unit) {
+      case 'days': totalDays = duration.value; break;
+      case 'months': totalDays = duration.value * 30; break;
+      case 'years': totalDays = duration.value * 365; break;
+      default: totalDays = duration.value;
+    }
+    
+    return dailyProfit * totalDays;
+  };
+
+  const handleFormChange = () => {
+    const dailyProfit = planForm.getFieldValue('dailyProfit');
+    const duration = planForm.getFieldValue('duration');
+    const totalReturn = calculateTotalReturn(dailyProfit, duration);
+    setCalculatedReturn(totalReturn);
+  };
+
   const handleCreatePlan = async (values) => {
     try {
+      const planData = {
+        ...values,
+        expectedReturn: calculatedReturn,
+        oneTimeOnly: values.oneTimeOnly || false
+      };
+      
+      console.log('Submitting plan data:', planData);
+      
       if (editingPlan) {
-        await api.put(`/plans/${editingPlan._id}`, values);
+        await api.put(`/plans/${editingPlan._id}`, planData);
         message.success('Plan updated successfully');
       } else {
-        await api.post('/plans', values);
+        await api.post('/plans', planData);
         message.success('Plan created successfully');
       }
       setPlanModal(false);
       setEditingPlan(null);
       planForm.resetFields();
+      setCalculatedReturn(0);
       fetchData();
     } catch (error) {
+      console.error('Plan submission error:', error);
       message.error(editingPlan ? 'Failed to update plan' : 'Failed to create plan');
     }
   };
 
   const handleEditPlan = (plan) => {
     setEditingPlan(plan);
+    const totalDays = plan.durationInDays || calculateTotalReturn(1, plan.duration);
+    const dailyProfit = totalDays > 0 ? plan.expectedReturn / totalDays : 0;
+    
     planForm.setFieldsValue({
       title: plan.title,
       description: plan.description,
       category: plan.category._id,
       amount: plan.amount,
-      expectedReturn: plan.expectedReturn,
+      dailyProfit: dailyProfit,
       duration: plan.duration,
-      isActive: plan.isActive
+      isActive: plan.isActive,
+      oneTimeOnly: plan.oneTimeOnly
     });
+    setCalculatedReturn(plan.expectedReturn);
     setPlanModal(true);
   };
 
@@ -150,6 +187,16 @@ const PlanManagement = () => {
       key: 'duration',
       render: (duration) => `${duration.value} ${duration.unit}`,
       sorter: (a, b) => a.durationInDays - b.durationInDays
+    },
+    {
+      title: 'Investment Type',
+      dataIndex: 'oneTimeOnly',
+      key: 'oneTimeOnly',
+      render: (oneTimeOnly) => (
+        <Tag color={oneTimeOnly ? 'orange' : 'blue'}>
+          {oneTimeOnly ? 'One Time Only' : 'Repeatable'}
+        </Tag>
+      )
     },
     {
       title: 'Status',
@@ -240,6 +287,7 @@ const PlanManagement = () => {
                 onClick={() => {
                   setEditingPlan(null);
                   planForm.resetFields();
+                  setCalculatedReturn(0);
                   setPlanModal(true);
                 }}
               >
@@ -284,6 +332,7 @@ const PlanManagement = () => {
           setPlanModal(false);
           setEditingPlan(null);
           planForm.resetFields();
+          setCalculatedReturn(0);
         }}
         footer={null}
         width={700}
@@ -357,15 +406,15 @@ const PlanManagement = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="expectedReturn"
-                label="Expected Return Amount (₹)"
+                name="dailyProfit"
+                label="Daily Profit (₹)"
                 rules={[
-                  { required: true, message: 'Please enter expected return amount' },
+                  { required: true, message: 'Please enter daily profit' },
                   {
                     validator: (_, value) => {
                       const numValue = Number(value);
                       if (!value) {
-                        return Promise.reject('Please enter expected return amount');
+                        return Promise.reject('Please enter daily profit');
                       }
                       if (isNaN(numValue) || numValue <= 0) {
                         return Promise.reject('Please enter a valid amount');
@@ -375,36 +424,58 @@ const PlanManagement = () => {
                   }
                 ]}
               >
-                <Input type="number" prefix="₹" placeholder="12500" />
+                <Input 
+                  type="number" 
+                  prefix="₹" 
+                  placeholder="100" 
+                  onChange={handleFormChange}
+                />
               </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
-            <Col span={8}>
+            <Col span={6}>
               <Form.Item
                 name={['duration', 'value']}
                 label="Duration Value"
                 rules={[{ required: true, message: 'Please enter duration value' }]}
               >
-                <Input type="number" placeholder="6" min={1} />
+                <Input 
+                  type="number" 
+                  placeholder="6" 
+                  min={1} 
+                  onChange={handleFormChange}
+                />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <Form.Item
                 name={['duration', 'unit']}
                 label="Duration Unit"
                 rules={[{ required: true, message: 'Please select duration unit' }]}
               >
-                <Select placeholder="Select unit">
+                <Select placeholder="Select unit" onChange={handleFormChange}>
                   <Option value="days">Days</Option>
                   <Option value="months">Months</Option>
                   <Option value="years">Years</Option>
                 </Select>
               </Form.Item>
             </Col>
+            <Col span={6}>
+              <Form.Item
+                name="oneTimeOnly"
+                label="Investment Type"
+                valuePropName="checked"
+              >
+                <Switch 
+                  checkedChildren="One Time" 
+                  unCheckedChildren="Repeatable" 
+                />
+              </Form.Item>
+            </Col>
             {editingPlan && (
-              <Col span={8}>
+              <Col span={6}>
                 <Form.Item
                   name="isActive"
                   label="Status"
@@ -416,12 +487,31 @@ const PlanManagement = () => {
             )}
           </Row>
 
+          {calculatedReturn > 0 && (
+            <Row>
+              <Col span={24}>
+                <div style={{ 
+                  background: '#f6ffed', 
+                  border: '1px solid #b7eb8f', 
+                  borderRadius: '6px', 
+                  padding: '12px', 
+                  marginBottom: '16px' 
+                }}>
+                  <Text strong style={{ color: '#52c41a' }}>
+                    Calculated Total Return: {formatCurrency(calculatedReturn)}
+                  </Text>
+                </div>
+              </Col>
+            </Row>
+          )}
+
           <Form.Item>
             <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
               <Button onClick={() => {
                 setPlanModal(false);
                 setEditingPlan(null);
                 planForm.resetFields();
+                setCalculatedReturn(0);
               }}>
                 Cancel
               </Button>

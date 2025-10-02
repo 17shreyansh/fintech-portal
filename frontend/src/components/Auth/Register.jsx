@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Form, Input, Button, Card, Typography, Space } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Card, Typography, Space, Row, Col } from 'antd';
+import { UserOutlined, LockOutlined, MailOutlined, BankOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -13,7 +13,8 @@ const Register = () => {
 
   const onFinish = async (values) => {
     setLoading(true);
-    const success = await register(values.name, values.email, values.password);
+    const { confirmPassword, ...registerData } = values;
+    const success = await register(registerData);
     if (success) {
       navigate('/dashboard');
     }
@@ -31,12 +32,12 @@ const Register = () => {
     }}>
       <Card style={{ 
         width: '100%', 
-        maxWidth: 400, 
+        maxWidth: 600, 
         boxShadow: '0 4px 12px rgba(0,0,0,0.15)' 
       }}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Title level={2} style={{ textAlign: 'center', marginBottom: 0 }}>
-            Create Account
+            Join Adhani Gold
           </Title>
           
           <Form
@@ -101,6 +102,61 @@ const Register = () => {
                 placeholder="Confirm Password"
               />
             </Form.Item>
+
+            <Typography.Title level={4} style={{ marginTop: 24, marginBottom: 16 }}>
+              <BankOutlined /> Bank Account Details
+            </Typography.Title>
+
+            <Form.Item
+              name={['bankDetails', 'accountHolderName']}
+              rules={[{ required: true, message: 'Please enter account holder name!' }]}
+            >
+              <Input placeholder="Account Holder Name" />
+            </Form.Item>
+
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name={['bankDetails', 'accountNumber']}
+                  rules={[
+                    { required: true, message: 'Please enter account number!' },
+                    { pattern: /^[0-9]{9,18}$/, message: 'Account number must be 9-18 digits!' }
+                  ]}
+                >
+                  <Input placeholder="Account Number" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name={['bankDetails', 'ifscCode']}
+                  rules={[
+                    { required: true, message: 'Please enter IFSC code!' },
+                    { pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: 'Invalid IFSC code format!' }
+                  ]}
+                >
+                  <Input placeholder="IFSC Code" style={{ textTransform: 'uppercase' }} />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name={['bankDetails', 'bankName']}
+                  rules={[{ required: true, message: 'Please enter bank name!' }]}
+                >
+                  <Input placeholder="Bank Name" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name={['bankDetails', 'branchName']}
+                  rules={[{ required: true, message: 'Please enter branch name!' }]}
+                >
+                  <Input placeholder="Branch Name" />
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Form.Item>
               <Button 

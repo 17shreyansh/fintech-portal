@@ -64,6 +64,8 @@ router.get('/investments', auth, async (req, res) => {
   }
 });
 
+
+
 // Change password
 router.put('/change-password', auth, async (req, res) => {
   try {

@@ -8,11 +8,38 @@ const Transaction = require('../models/Transaction');
 const router = express.Router();
 
 // Get all categories and plans
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const categories = await PlanCategory.find({ isActive: true });
     const plans = await InvestmentPlan.find({ isActive: true }).populate('category');
-    res.json({ categories, plans });
+    
+    // Check which plans user has active investments in
+    const activeInvestments = await Investment.find({
+      user: req.user.id,
+      status: 'active'
+    }).select('plan');
+    
+    // Check which plans user has ever invested in (for one-time-only plans)
+    const allUserInvestments = await Investment.find({
+      user: req.user.id
+    }).select('plan');
+    
+    const activePlanIds = activeInvestments.map(inv => inv.plan.toString());
+    const allInvestedPlanIds = allUserInvestments.map(inv => inv.plan.toString());
+    
+    // Add locked status to plans
+    const plansWithLockStatus = plans.map(plan => {
+      const hasActiveInvestment = activePlanIds.includes(plan._id.toString());
+      const hasEverInvested = allInvestedPlanIds.includes(plan._id.toString());
+      const isLockedForOneTime = plan.oneTimeOnly && hasEverInvested;
+      
+      return {
+        ...plan.toObject(),
+        isLocked: hasActiveInvestment || isLockedForOneTime
+      };
+    });
+    
+    res.json({ categories, plans: plansWithLockStatus });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -28,6 +55,33 @@ router.post('/buy/:planId', auth, async (req, res) => {
 
     if (!plan.isActive) {
       return res.status(400).json({ message: 'This investment plan is currently inactive' });
+    }
+
+    // Check if user already has an active investment in this plan
+    const existingActiveInvestment = await Investment.findOne({
+      user: req.user.id,
+      plan: req.params.planId,
+      status: 'active'
+    });
+
+    if (existingActiveInvestment) {
+      return res.status(400).json({ 
+        message: 'You already have an active investment in this plan. Please wait for it to mature before investing again.' 
+      });
+    }
+
+    // Check if plan is one-time-only and user has ever invested
+    if (plan.oneTimeOnly) {
+      const hasEverInvested = await Investment.findOne({
+        user: req.user.id,
+        plan: req.params.planId
+      });
+
+      if (hasEverInvested) {
+        return res.status(400).json({ 
+          message: 'This is a one-time investment plan. You have already invested in this plan and cannot invest again.' 
+        });
+      }
     }
 
     const user = await User.findById(req.user.id);
@@ -120,7 +174,7 @@ router.get('/admin/all', adminAuth, async (req, res) => {
 // Admin: Create plan
 router.post('/', adminAuth, async (req, res) => {
   try {
-    const { title, description, category, amount, expectedReturn, duration } = req.body;
+    const { title, description, category, amount, expectedReturn, duration, oneTimeOnly } = req.body;
     
     // Validate category exists
     const categoryExists = await PlanCategory.findById(category);
@@ -129,7 +183,7 @@ router.post('/', adminAuth, async (req, res) => {
     }
     
     const plan = new InvestmentPlan({
-      title, description, category, amount, expectedReturn, duration
+      title, description, category, amount, expectedReturn, duration, oneTimeOnly
     });
     await plan.save();
     
@@ -143,11 +197,11 @@ router.post('/', adminAuth, async (req, res) => {
 // Admin: Update plan
 router.put('/:id', adminAuth, async (req, res) => {
   try {
-    const { title, description, category, amount, expectedReturn, duration, isActive } = req.body;
+    const { title, description, category, amount, expectedReturn, duration, isActive, oneTimeOnly } = req.body;
     
     const plan = await InvestmentPlan.findByIdAndUpdate(
       req.params.id,
-      { title, description, category, amount, expectedReturn, duration, isActive },
+      { title, description, category, amount, expectedReturn, duration, isActive, oneTimeOnly },
       { new: true }
     ).populate('category');
     
@@ -179,6 +233,20 @@ router.delete('/:id', adminAuth, async (req, res) => {
     
     await InvestmentPlan.findByIdAndDelete(req.params.id);
     res.json({ message: 'Plan deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get user's active investments
+router.get('/my-investments', auth, async (req, res) => {
+  try {
+    const investments = await Investment.find({
+      user: req.user.id,
+      status: 'active'
+    }).populate('plan');
+    
+    res.json(investments);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }

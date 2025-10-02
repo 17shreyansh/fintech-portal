@@ -23,13 +23,14 @@ const PlanCard = ({ plan, onBuyPlan, loading = false }) => {
         position: 'relative',
         borderRadius: '12px',
         overflow: 'hidden',
-        background: 'linear-gradient(180deg, #e6e6ff 0%, #ffffff 100%)',
+        background: plan.isLocked ? 'linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%)' : 'linear-gradient(180deg, #e6e6ff 0%, #ffffff 100%)',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
         width: '100%',
         textAlign: 'center',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        opacity: plan.isLocked ? 0.6 : 1,
       }}
     >
       {/* Ribbon */}
@@ -38,7 +39,7 @@ const PlanCard = ({ plan, onBuyPlan, loading = false }) => {
           position: 'absolute',
           top: 12,
           left: -40,
-          background: '#a64dff',
+          background: plan.isLocked ? '#ff4d4f' : '#a64dff',
           color: '#fff',
           transform: 'rotate(-45deg)',
           width: 140,
@@ -48,8 +49,27 @@ const PlanCard = ({ plan, onBuyPlan, loading = false }) => {
           padding: '4px 0',
         }}
       >
-        {plan.duration.value} {plan.duration.unit}
+        {plan.isLocked ? 'LOCKED' : `${plan.duration.value} ${plan.duration.unit}`}
       </div>
+
+      {/* One Time Badge */}
+      {plan.oneTimeOnly && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            background: '#fa8c16',
+            color: '#fff',
+            borderRadius: '12px',
+            padding: '4px 8px',
+            fontSize: 10,
+            fontWeight: 'bold',
+          }}
+        >
+          ONE TIME
+        </div>
+      )}
 
       {/* Image */}
       <div style={{ paddingTop: 32 }}>
@@ -78,18 +98,19 @@ const PlanCard = ({ plan, onBuyPlan, loading = false }) => {
       {/* CTA */}
       <div style={{ padding: '0 16px 16px 16px', marginTop: 'auto' }}>
         <Button
-          type="primary"
+          type={plan.isLocked ? 'default' : 'primary'}
           block
           size="large"
           loading={loading}
-          onClick={() => onBuyPlan(plan)}
+          disabled={plan.isLocked}
+          onClick={() => !plan.isLocked && onBuyPlan(plan)}
           style={{
             fontWeight: 'bold',
             height: '44px',
             borderRadius: '8px',
           }}
         >
-          Buy Now
+          {plan.isLocked ? 'Already Invested' : 'Buy Now'}
         </Button>
       </div>
     </div>

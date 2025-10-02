@@ -54,6 +54,26 @@ router.put('/users/:id/toggle-status', adminAuth, async (req, res) => {
   }
 });
 
+// Update user bank details (Admin support)
+router.put('/users/:id/bank-details', adminAuth, async (req, res) => {
+  try {
+    const { bankDetails } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { bankDetails },
+      { new: true }
+    ).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json({ message: 'Bank details updated successfully', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get user details with investments
 router.get('/users/:id', adminAuth, async (req, res) => {
   try {

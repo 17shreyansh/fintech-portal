@@ -19,6 +19,7 @@ import Wallet from '../User/Wallet';
 import WithdrawalHistory from '../User/WithdrawalHistory';
 import Support from '../User/Support';
 import Settings from '../User/Settings';
+import ReferralBar from '../User/ReferralBar';
 
 const { Header, Sider, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -83,6 +84,8 @@ const UserLayout = () => {
           <Avatar size="small" icon={<UserOutlined />} />
         </Dropdown>
       </Header>
+      
+      <ReferralBar userId={user?.id} />
       
       <Drawer
         title={<div style={{ color: 'white', fontWeight: 'bold' }}>FinTech Portal</div>}
@@ -153,6 +156,8 @@ const UserLayout = () => {
             </Space>
           </Dropdown>
         </Header>
+        
+        <ReferralBar userId={user?.id} />
         
         <Content className="desktop-content">
           <Routes>

@@ -37,7 +37,7 @@ const Login = () => {
       }}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Title level={2} style={{ textAlign: 'center', marginBottom: 0 }}>
-            FinTech Login
+            Adhani Gold Login
           </Title>
           
           <Form
@@ -82,6 +82,9 @@ const Login = () => {
           </Form>
 
           <div style={{ textAlign: 'center' }}>
+            <Link to="/forgot-password" style={{ color: '#1890ff', marginBottom: 16, display: 'block' }}>
+              Forgot Password?
+            </Link>
             Don't have an account? <Link to="/register">Register now</Link>
           </div>
         </Space>

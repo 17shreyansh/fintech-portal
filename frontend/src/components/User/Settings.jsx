@@ -23,7 +23,8 @@ import {
   PhoneOutlined,
   BellOutlined,
   SafetyOutlined,
-  EditOutlined
+  EditOutlined,
+  BankOutlined
 } from '@ant-design/icons';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -68,6 +69,8 @@ const Settings = () => {
       setProfileLoading(false);
     }
   };
+
+
 
   const handlePasswordChange = async (values) => {
     setLoading(true);
@@ -179,8 +182,83 @@ const Settings = () => {
             <Card 
               title={
                 <Space>
+                  <BankOutlined />
+                  <span>Bank Account Details</span>
+                </Space>
+              }
+              className="form-card"
+            >
+              {userProfile?.bankDetails ? (
+                <div>
+                  <Row gutter={16}>
+                    <Col xs={24} sm={12}>
+                      <div style={{ marginBottom: 16 }}>
+                        <Text strong>Account Holder Name</Text>
+                        <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px', marginTop: 4 }}>
+                          {userProfile.bankDetails.accountHolderName}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <div style={{ marginBottom: 16 }}>
+                        <Text strong>Account Number</Text>
+                        <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px', marginTop: 4 }}>
+                          {userProfile.maskedAccountNumber}
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row gutter={16}>
+                    <Col xs={24} sm={12}>
+                      <div style={{ marginBottom: 16 }}>
+                        <Text strong>IFSC Code</Text>
+                        <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px', marginTop: 4 }}>
+                          {userProfile.bankDetails.ifscCode}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <div style={{ marginBottom: 16 }}>
+                        <Text strong>Bank Name</Text>
+                        <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px', marginTop: 4 }}>
+                          {userProfile.bankDetails.bankName}
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row gutter={16}>
+                    <Col xs={24}>
+                      <div style={{ marginBottom: 16 }}>
+                        <Text strong>Branch Name</Text>
+                        <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px', marginTop: 4 }}>
+                          {userProfile.bankDetails.branchName}
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Alert
+                    message="Bank Details Locked"
+                    description="For security reasons, bank details can only be modified by admin support. Contact support if you need to update your bank information."
+                    type="info"
+                    showIcon
+                    style={{ marginTop: 16 }}
+                  />
+                </div>
+              ) : (
+                <Alert
+                  message="No Bank Details Found"
+                  description="No bank account information is available. Contact admin support to add your bank details."
+                  type="warning"
+                  showIcon
+                />
+              )}
+            </Card>
+
+            <Card 
+              title={
+                <Space>
                   <LockOutlined />
-                  <span>Change Password</span>
+                  <span>Password Management</span>
                 </Space>
               }
               className="form-card"
@@ -192,6 +270,22 @@ const Settings = () => {
                 showIcon
                 style={{ marginBottom: 20 }}
               />
+              
+              <div style={{ marginBottom: 20, padding: 16, background: '#f6ffed', border: '1px solid #b7eb8f', borderRadius: 6 }}>
+                <Text strong style={{ color: '#389e0d' }}>Alternative: Reset Password via Email</Text>
+                <div style={{ marginTop: 8 }}>
+                  <Text style={{ color: '#666', fontSize: 14 }}>Forgot your current password? Use email reset instead.</Text>
+                  <div style={{ marginTop: 8 }}>
+                    <Button 
+                      type="link" 
+                      style={{ padding: 0, height: 'auto' }}
+                      onClick={() => window.open('/forgot-password', '_blank')}
+                    >
+                      Send Password Reset Email
+                    </Button>
+                  </div>
+                </div>
+              </div>
               
               <Form
                 form={passwordForm}

@@ -10,7 +10,8 @@ const investmentPlanSchema = new mongoose.Schema({
     value: { type: Number, required: true },
     unit: { type: String, enum: ['days', 'months', 'years'], required: true }
   },
-  isActive: { type: Boolean, default: true }
+  isActive: { type: Boolean, default: true },
+  oneTimeOnly: { type: Boolean, default: false }
 }, { timestamps: true });
 
 // Virtual for duration in days

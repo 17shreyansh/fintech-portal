@@ -8,6 +8,13 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   walletBalance: { type: Number, default: 0 },
   isActive: { type: Boolean, default: true },
+  bankDetails: {
+    accountHolderName: { type: String, required: true },
+    accountNumber: { type: String, required: true },
+    ifscCode: { type: String, required: true },
+    bankName: { type: String, required: true },
+    branchName: { type: String, required: true }
+  },
   kyc: {
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
     documents: [String]
@@ -19,8 +26,20 @@ const userSchema = new mongoose.Schema({
       email: { type: Boolean, default: true },
       sms: { type: Boolean, default: false }
     }
-  }
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 }, { timestamps: true });
+
+// Virtual to mask account number for display
+userSchema.virtual('maskedAccountNumber').get(function() {
+  if (!this.bankDetails?.accountNumber) return '';
+  const acc = this.bankDetails.accountNumber;
+  return acc.length > 4 ? 'XXXX' + acc.slice(-4) : acc;
+});
+
+userSchema.set('toJSON', { virtuals: true });
+userSchema.set('toObject', { virtuals: true });
 
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();

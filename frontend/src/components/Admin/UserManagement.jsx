@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Tag, Modal, Typography, message, Card } from 'antd';
-import { UserOutlined, EyeOutlined } from '@ant-design/icons';
+import { Table, Button, Tag, Modal, Typography, message, Card, Form, Input, Row, Col } from 'antd';
+import { UserOutlined, EyeOutlined, BankOutlined, EditOutlined } from '@ant-design/icons';
 import api from '../../services/api';
 import { formatCurrency } from '../../utils/currency';
 
@@ -10,8 +10,11 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userDetailModal, setUserDetailModal] = useState(false);
+  const [bankEditModal, setBankEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
+  const [bankForm] = Form.useForm();
+  const [bankLoading, setBankLoading] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -48,6 +51,31 @@ const UserManagement = () => {
     }
   };
 
+  const handleEditBankDetails = (user) => {
+    setSelectedUser(user);
+    if (user.bankDetails) {
+      bankForm.setFieldsValue(user.bankDetails);
+    } else {
+      bankForm.resetFields();
+    }
+    setBankEditModal(true);
+  };
+
+  const handleBankDetailsUpdate = async (values) => {
+    setBankLoading(true);
+    try {
+      await api.put(`/admin/users/${selectedUser._id}/bank-details`, { bankDetails: values });
+      message.success('Bank details updated successfully');
+      setBankEditModal(false);
+      fetchUserDetails(selectedUser._id);
+      fetchUsers();
+    } catch (error) {
+      message.error('Failed to update bank details');
+    } finally {
+      setBankLoading(false);
+    }
+  };
+
   const columns = [
     {
       title: 'Name',
@@ -65,6 +93,12 @@ const UserManagement = () => {
       key: 'walletBalance',
       render: (balance) => formatCurrency(balance),
       sorter: (a, b) => a.walletBalance - b.walletBalance,
+    },
+    {
+      title: 'Bank Account',
+      dataIndex: 'maskedAccountNumber',
+      key: 'bankAccount',
+      render: (masked, record) => record.bankDetails ? masked : 'Not Added',
     },
     {
       title: 'Status',
@@ -157,6 +191,33 @@ const UserManagement = () => {
               </p>
             </Card>
 
+            <Card 
+              title="Bank Account Details" 
+              style={{ marginBottom: 16 }}
+              extra={
+                <Button 
+                  type="primary" 
+                  size="small" 
+                  icon={<EditOutlined />}
+                  onClick={() => handleEditBankDetails(userDetails.user)}
+                >
+                  Edit Bank Details
+                </Button>
+              }
+            >
+              {userDetails.user.bankDetails ? (
+                <div>
+                  <p><strong>Account Holder:</strong> {userDetails.user.bankDetails.accountHolderName}</p>
+                  <p><strong>Account Number:</strong> {userDetails.user.maskedAccountNumber}</p>
+                  <p><strong>IFSC Code:</strong> {userDetails.user.bankDetails.ifscCode}</p>
+                  <p><strong>Bank Name:</strong> {userDetails.user.bankDetails.bankName}</p>
+                  <p><strong>Branch:</strong> {userDetails.user.bankDetails.branchName}</p>
+                </div>
+              ) : (
+                <p style={{ color: '#8c8c8c' }}>No bank details added</p>
+              )}
+            </Card>
+
             <Card title="Investments" style={{ marginBottom: 16 }}>
               <Table
                 dataSource={userDetails.investments}
@@ -186,6 +247,87 @@ const UserManagement = () => {
             </Card>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        title="Edit Bank Details"
+        open={bankEditModal}
+        onCancel={() => setBankEditModal(false)}
+        footer={null}
+        width={600}
+      >
+        <Form
+          form={bankForm}
+          onFinish={handleBankDetailsUpdate}
+          layout="vertical"
+        >
+          <Form.Item
+            name="accountHolderName"
+            label="Account Holder Name"
+            rules={[{ required: true, message: 'Please enter account holder name' }]}
+          >
+            <Input placeholder="Enter account holder name" />
+          </Form.Item>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="accountNumber"
+                label="Account Number"
+                rules={[
+                  { required: true, message: 'Please enter account number' },
+                  { pattern: /^[0-9]{9,18}$/, message: 'Account number must be 9-18 digits' }
+                ]}
+              >
+                <Input placeholder="Enter account number" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="ifscCode"
+                label="IFSC Code"
+                rules={[
+                  { required: true, message: 'Please enter IFSC code' },
+                  { pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: 'Invalid IFSC code format' }
+                ]}
+              >
+                <Input placeholder="Enter IFSC code" style={{ textTransform: 'uppercase' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="bankName"
+                label="Bank Name"
+                rules={[{ required: true, message: 'Please enter bank name' }]}
+              >
+                <Input placeholder="Enter bank name" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="branchName"
+                label="Branch Name"
+                rules={[{ required: true, message: 'Please enter branch name' }]}
+              >
+                <Input placeholder="Enter branch name" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <Button onClick={() => setBankEditModal(false)}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={bankLoading}>
+                Update Bank Details
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
   );
