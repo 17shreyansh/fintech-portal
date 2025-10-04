@@ -3,8 +3,9 @@ const Investment = require('../models/Investment');
 const User = require('../models/User');
 const Transaction = require('../models/Transaction');
 
-// Run every minute for testing, change to '0 0 * * *' for daily in production
-const processMaturedInvestments = cron.schedule('* * * * *', async () => {
+// Run daily at midnight in production, every minute in development
+const cronExpression = process.env.NODE_ENV === 'production' ? '0 0 * * *' : '* * * * *';
+const processMaturedInvestments = cron.schedule(cronExpression, async () => {
   try {
     const now = new Date();
     console.log(`[${now.toISOString()}] Checking for matured investments...`);
