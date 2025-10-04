@@ -87,7 +87,7 @@ router.get('/history', auth, async (req, res) => {
 router.get('/all', adminAuth, async (req, res) => {
   try {
     const transactions = await Transaction.find()
-      .populate('user', 'name email')
+      .populate('user', 'name email bankDetails')
       .populate('plan')
       .sort({ createdAt: -1 });
     res.json(transactions);

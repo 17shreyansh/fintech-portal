@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Tag, Modal, Image, message, Typography, Card, Space } from 'antd';
-import { EyeOutlined, CheckOutlined, CloseOutlined, WalletOutlined } from '@ant-design/icons';
+import { Table, Button, Tag, Modal, Image, message, Typography, Card, Space, Descriptions } from 'antd';
+import { EyeOutlined, CheckOutlined, CloseOutlined, WalletOutlined, BankOutlined } from '@ant-design/icons';
 import api from '../../services/api';
 import { formatCurrency } from '../../utils/currency';
 
@@ -11,6 +11,8 @@ const TransactionManagement = () => {
   const [loading, setLoading] = useState(true);
   const [proofModal, setProofModal] = useState(false);
   const [selectedProof, setSelectedProof] = useState('');
+  const [userDetailsModal, setUserDetailsModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     fetchTransactions();
@@ -42,11 +44,32 @@ const TransactionManagement = () => {
     setProofModal(true);
   };
 
+  const viewUserDetails = (user) => {
+    setSelectedUser(user);
+    setUserDetailsModal(true);
+  };
+
   const columns = [
     {
       title: 'User',
       dataIndex: ['user', 'name'],
       key: 'user',
+      render: (name, record) => (
+        <div>
+          <div style={{ fontWeight: 'bold' }}>{name}</div>
+          {record.type === 'withdrawal' && (
+            <Button 
+              type="link" 
+              size="small" 
+              icon={<BankOutlined />}
+              onClick={() => viewUserDetails(record.user)}
+              style={{ padding: 0, height: 'auto' }}
+            >
+              View Bank Details
+            </Button>
+          )}
+        </div>
+      ),
     },
     {
       title: 'Type',
@@ -185,6 +208,51 @@ const TransactionManagement = () => {
             style={{ maxWidth: '100%' }}
           />
         </div>
+      </Modal>
+
+      <Modal
+        title="User Bank Details"
+        open={userDetailsModal}
+        onCancel={() => setUserDetailsModal(false)}
+        footer={null}
+        width={600}
+      >
+        {selectedUser && (
+          <Card>
+            <Descriptions column={1} bordered>
+              <Descriptions.Item label="User Name">{selectedUser.name}</Descriptions.Item>
+              <Descriptions.Item label="Email">{selectedUser.email}</Descriptions.Item>
+              {selectedUser.bankDetails ? (
+                <>
+                  <Descriptions.Item label="Account Holder">
+                    {selectedUser.bankDetails.accountHolderName}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Account Number">
+                    {selectedUser.bankDetails.accountNumber}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="IFSC Code">
+                    {selectedUser.bankDetails.ifscCode}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Bank Name">
+                    {selectedUser.bankDetails.bankName}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Branch Name">
+                    {selectedUser.bankDetails.branchName}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="UPI ID">
+                    <span style={{ fontFamily: 'monospace', color: '#1890ff' }}>
+                      {selectedUser.bankDetails.upiId}
+                    </span>
+                  </Descriptions.Item>
+                </>
+              ) : (
+                <Descriptions.Item label="Bank Details">
+                  <span style={{ color: '#ff4d4f' }}>No bank details available</span>
+                </Descriptions.Item>
+              )}
+            </Descriptions>
+          </Card>
+        )}
       </Modal>
     </div>
   );
