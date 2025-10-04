@@ -18,15 +18,20 @@ const seedData = async () => {
     await InvestmentPlan.deleteMany({});
 
     // Create admin user
-    const adminPassword = await bcrypt.hash('admin123', 12);
     const admin = new User({
       name: 'Admin User',
       email: 'admin@fintech.com',
-      password: adminPassword,
+      password: 'admin123',
       role: 'admin',
-      walletBalance: 0
+      walletBalance: 0,
+      bankDetails: {
+        accountHolderName: 'Admin User',
+        accountNumber: '1234567890',
+        ifscCode: 'HDFC0000001',
+        bankName: 'HDFC Bank',
+        branchName: 'Main Branch'
+      }
     });
-    admin.password = 'admin123'; // Let pre-save hook handle hashing
     await admin.save();
 
     // Create test user
@@ -35,7 +40,14 @@ const seedData = async () => {
       email: 'user@test.com',
       password: 'user123',
       role: 'user',
-      walletBalance: 50000 // ₹50,000
+      walletBalance: 50000,
+      bankDetails: {
+        accountHolderName: 'Test User',
+        accountNumber: '9876543210',
+        ifscCode: 'ICICI0000001',
+        bankName: 'ICICI Bank',
+        branchName: 'Test Branch'
+      }
     });
     await user.save();
 
