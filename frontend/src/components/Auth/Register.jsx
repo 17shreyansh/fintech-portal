@@ -158,6 +158,16 @@ const Register = () => {
               </Col>
             </Row>
 
+            <Form.Item
+              name={['bankDetails', 'upiId']}
+              rules={[
+                { required: true, message: 'Please enter UPI ID!' },
+                { pattern: /^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/, message: 'Invalid UPI ID format!' }
+              ]}
+            >
+              <Input placeholder="UPI ID (e.g., yourname@paytm)" />
+            </Form.Item>
+
             <Form.Item>
               <Button 
                 type="primary" 

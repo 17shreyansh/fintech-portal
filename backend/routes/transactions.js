@@ -4,6 +4,7 @@ const path = require('path');
 const { auth, adminAuth } = require('../middleware/auth');
 const Transaction = require('../models/Transaction');
 const User = require('../models/User');
+const QRSettings = require('../models/QRSettings');
 const router = express.Router();
 
 // Multer config for file uploads
@@ -16,6 +17,19 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage });
+
+// Get QR settings for deposit
+router.get('/qr-settings', auth, async (req, res) => {
+  try {
+    const qrSettings = await QRSettings.findOne({ isActive: true });
+    if (!qrSettings) {
+      return res.status(404).json({ message: 'QR settings not found' });
+    }
+    res.json(qrSettings);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // User: Request deposit
 router.post('/deposit', auth, upload.single('proof'), async (req, res) => {

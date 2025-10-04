@@ -5,6 +5,7 @@ require('dotenv').config();
 const User = require('./models/User');
 const PlanCategory = require('./models/PlanCategory');
 const InvestmentPlan = require('./models/InvestmentPlan');
+const QRSettings = require('./models/QRSettings');
 
 const seedData = async () => {
   try {
@@ -29,7 +30,8 @@ const seedData = async () => {
         accountNumber: '1234567890',
         ifscCode: 'HDFC0000001',
         bankName: 'HDFC Bank',
-        branchName: 'Main Branch'
+        branchName: 'Main Branch',
+        upiId: 'admin@paytm'
       }
     });
     await admin.save();
@@ -46,7 +48,8 @@ const seedData = async () => {
         accountNumber: '9876543210',
         ifscCode: 'ICICI0000001',
         bankName: 'ICICI Bank',
-        branchName: 'Test Branch'
+        branchName: 'Test Branch',
+        upiId: 'testuser@phonepe'
       }
     });
     await user.save();
@@ -159,9 +162,19 @@ const seedData = async () => {
 
     await InvestmentPlan.insertMany(plans);
 
+    // Create default QR settings
+    const qrSettings = new QRSettings({
+      qrCodeImage: 'default-qr.png', // Admin should upload actual QR code
+      upiId: 'business@paytm',
+      updatedBy: admin._id,
+      isActive: true
+    });
+    await qrSettings.save();
+
     console.log('Seed data created successfully!');
     console.log('Admin credentials: admin@fintech.com / admin123');
     console.log('User credentials: user@test.com / user123');
+    console.log('Note: Please upload QR code image in admin panel');
     
     process.exit(0);
   } catch (error) {

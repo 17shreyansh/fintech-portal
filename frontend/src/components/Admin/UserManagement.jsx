@@ -212,6 +212,7 @@ const UserManagement = () => {
                   <p><strong>IFSC Code:</strong> {userDetails.user.bankDetails.ifscCode}</p>
                   <p><strong>Bank Name:</strong> {userDetails.user.bankDetails.bankName}</p>
                   <p><strong>Branch:</strong> {userDetails.user.bankDetails.branchName}</p>
+                  <p><strong>UPI ID:</strong> {userDetails.user.bankDetails.upiId}</p>
                 </div>
               ) : (
                 <p style={{ color: '#8c8c8c' }}>No bank details added</p>
@@ -316,6 +317,17 @@ const UserManagement = () => {
               </Form.Item>
             </Col>
           </Row>
+
+          <Form.Item
+            name="upiId"
+            label="UPI ID"
+            rules={[
+              { required: true, message: 'Please enter UPI ID' },
+              { pattern: /^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/, message: 'Invalid UPI ID format' }
+            ]}
+          >
+            <Input placeholder="Enter UPI ID (e.g., user@paytm)" />
+          </Form.Item>
 
           <Form.Item>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>

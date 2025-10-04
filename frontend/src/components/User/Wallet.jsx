@@ -44,10 +44,12 @@ const Wallet = () => {
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [depositModal, setDepositModal] = useState(false);
+  const [qrSettings, setQrSettings] = useState(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
     fetchData();
+    fetchQRSettings();
   }, []);
 
   const fetchData = async () => {
@@ -85,6 +87,15 @@ const Wallet = () => {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchQRSettings = async () => {
+    try {
+      const response = await api.get('/transactions/qr-settings');
+      setQrSettings(response.data);
+    } catch (error) {
+      console.error('Error fetching QR settings:', error);
     }
   };
 
@@ -380,7 +391,44 @@ const Wallet = () => {
         width={500}
         destroyOnClose={true}
       >
-        <Form form={form} onFinish={handleDeposit} layout="vertical" style={{ marginTop: 20 }}>
+        {qrSettings && (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '16px', 
+            background: '#f6ffed', 
+            border: '1px solid #b7eb8f',
+            borderRadius: '8px',
+            marginBottom: '20px'
+          }}>
+            <div style={{ marginBottom: '12px' }}>
+              <Text strong style={{ fontSize: '16px' }}>Scan QR Code to Pay</Text>
+            </div>
+            <div style={{ marginBottom: '12px' }}>
+              <img 
+                src={`${import.meta.env.VITE_API_BASE_URL}/uploads/${qrSettings.qrCodeImage}`}
+                alt="Payment QR Code"
+                style={{ width: '200px', height: '200px', border: '2px solid #52c41a', borderRadius: '8px' }}
+              />
+            </div>
+            <div style={{ 
+              background: '#fff', 
+              padding: '8px 12px', 
+              borderRadius: '6px',
+              display: 'inline-block',
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              color: '#1890ff',
+              border: '1px solid #d9d9d9'
+            }}>
+              UPI ID: {qrSettings.upiId}
+            </div>
+            <div style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>
+              After payment, upload the screenshot as proof below
+            </div>
+          </div>
+        )}
+        
+        <Form form={form} onFinish={handleDeposit} layout="vertical">
           <Form.Item
             name="amount"
             label="Deposit Amount (₹)"

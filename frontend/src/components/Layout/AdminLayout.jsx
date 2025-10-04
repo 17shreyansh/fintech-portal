@@ -7,7 +7,7 @@ import {
   FundProjectionScreenOutlined,
   WalletOutlined,
   QuestionCircleOutlined,
-  SettingOutlined,
+  QrcodeOutlined,
   LogoutOutlined,
   MenuOutlined
 } from '@ant-design/icons';
@@ -17,6 +17,7 @@ import UserManagement from '../Admin/UserManagement';
 import PlanManagement from '../Admin/PlanManagement';
 import TransactionManagement from '../Admin/TransactionManagement';
 import SupportManagement from '../Admin/SupportManagement';
+import QRManagement from '../Admin/QRManagement';
 
 const { Header, Sider, Content } = Layout;
 
@@ -46,6 +47,7 @@ const AdminLayout = () => {
     { key: '/admin/users', icon: <UserOutlined />, label: 'User Management' },
     { key: '/admin/plans', icon: <FundProjectionScreenOutlined />, label: 'Investment Plans' },
     { key: '/admin/transactions', icon: <WalletOutlined />, label: 'Transactions' },
+    { key: '/admin/qr-settings', icon: <QrcodeOutlined />, label: 'QR Settings' },
     { key: '/admin/support', icon: <QuestionCircleOutlined />, label: 'Support Tickets' },
   ];
 
@@ -150,6 +152,7 @@ const AdminLayout = () => {
               <Route path="/users" element={<UserManagement />} />
               <Route path="/plans" element={<PlanManagement />} />
               <Route path="/transactions" element={<TransactionManagement />} />
+              <Route path="/qr-settings" element={<QRManagement />} />
               <Route path="/support" element={<SupportManagement />} />
             </Routes>
           </div>
@@ -220,6 +223,7 @@ const AdminLayout = () => {
             <Route path="/users" element={<UserManagement />} />
             <Route path="/plans" element={<PlanManagement />} />
             <Route path="/transactions" element={<TransactionManagement />} />
+            <Route path="/qr-settings" element={<QRManagement />} />
             <Route path="/support" element={<SupportManagement />} />
           </Routes>
         </Content>
