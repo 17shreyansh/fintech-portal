@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'production') {
 // CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL] 
+    ? ['https://adhanigold.com', 'https://www.adhanigold.com'] 
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true
 };
