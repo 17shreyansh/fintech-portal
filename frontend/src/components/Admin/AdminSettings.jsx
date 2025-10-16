@@ -14,7 +14,7 @@ const AdminSettings = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/user/change-password`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/change-password`,
         values,
         {
           headers: { Authorization: `Bearer ${token}` }
