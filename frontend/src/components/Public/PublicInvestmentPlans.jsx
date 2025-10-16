@@ -26,7 +26,7 @@ const PublicInvestmentPlans = () => {
 
   const fetchPlans = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = import.meta.env.VITE_API_BASE_URLL || 'http://localhost:5000';
       console.log('Fetching plans from:', `${apiUrl}/api/plans/public`);
       
       // Test if backend is reachable

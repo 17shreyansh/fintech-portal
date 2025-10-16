@@ -27,7 +27,7 @@ const ContactUs = () => {
 
   const fetchContactInfo = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/contact`);
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URLL}/api/contact`);
       setContactInfo(response.data);
     } catch (error) {
       console.error('Failed to fetch contact info:', error);
