@@ -1,7 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App as AntApp } from 'antd';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import LandingPage from './components/Public/LandingPage';
+import PublicInvestmentPlans from './components/Public/PublicInvestmentPlans';
+import AboutUs from './components/Public/AboutUs';
+import ContactUs from './components/Public/ContactUs';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import ForgotPassword from './components/Auth/ForgotPassword';
@@ -25,44 +29,60 @@ function App() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#1890ff',
-          borderRadius: 6,
+          colorPrimary: '#d4af37',
+          colorPrimaryHover: '#b8941f',
+          colorLink: '#d4af37',
+          borderRadius: 8,
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
         },
         components: {
           Layout: {
-            bodyBg: '#f0f2f5',
+            bodyBg: '#ffffff',
           },
           Card: {
-            borderRadiusLG: 8,
+            borderRadiusLG: 12,
+            boxShadowTertiary: '0 4px 20px rgba(0,0,0,0.08)',
           },
-          Table: {
-            borderRadiusLG: 6,
+          Button: {
+            borderRadiusLG: 8,
+            fontWeight: 500,
+          },
+          Input: {
+            borderRadiusLG: 8,
           },
         },
       }}
     >
-      <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/admin/*" element={
-              <ProtectedRoute adminOnly>
-                <AdminLayout />
-              </ProtectedRoute>
-            } />
-            <Route path="/*" element={
-              <ProtectedRoute>
-                <UserLayout />
-              </ProtectedRoute>
-            } />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-          </Routes>
-        </Router>
-        <Toaster position="top-right" />
-      </AuthProvider>
+      <AntApp>
+        <AuthProvider>
+          <Router>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/investment-plans" element={<PublicInvestmentPlans />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              
+              {/* Protected Routes */}
+              <Route path="/admin/*" element={
+                <ProtectedRoute adminOnly>
+                  <AdminLayout />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/*" element={
+                <ProtectedRoute>
+                  <UserLayout />
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </Router>
+          <Toaster position="top-right" />
+        </AuthProvider>
+      </AntApp>
     </ConfigProvider>
   );
 }

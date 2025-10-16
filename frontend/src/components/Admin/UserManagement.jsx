@@ -211,7 +211,6 @@ const UserManagement = () => {
                   <p><strong>Account Number:</strong> {userDetails.user.maskedAccountNumber}</p>
                   <p><strong>IFSC Code:</strong> {userDetails.user.bankDetails.ifscCode}</p>
                   <p><strong>Bank Name:</strong> {userDetails.user.bankDetails.bankName}</p>
-                  <p><strong>Branch:</strong> {userDetails.user.bankDetails.branchName}</p>
                   <p><strong>UPI ID:</strong> {userDetails.user.bankDetails.upiId}</p>
                 </div>
               ) : (
@@ -297,26 +296,13 @@ const UserManagement = () => {
             </Col>
           </Row>
 
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="bankName"
-                label="Bank Name"
-                rules={[{ required: true, message: 'Please enter bank name' }]}
-              >
-                <Input placeholder="Enter bank name" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="branchName"
-                label="Branch Name"
-                rules={[{ required: true, message: 'Please enter branch name' }]}
-              >
-                <Input placeholder="Enter branch name" />
-              </Form.Item>
-            </Col>
-          </Row>
+          <Form.Item
+            name="bankName"
+            label="Bank Name"
+            rules={[{ required: true, message: 'Please enter bank name' }]}
+          >
+            <Input placeholder="Enter bank name" />
+          </Form.Item>
 
           <Form.Item
             name="upiId"

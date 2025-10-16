@@ -7,6 +7,17 @@ const User = require('../models/User');
 const Transaction = require('../models/Transaction');
 const router = express.Router();
 
+// Public: Get all categories and plans (no auth required)
+router.get('/public', async (req, res) => {
+  try {
+    const categories = await PlanCategory.find({ isActive: true });
+    const plans = await InvestmentPlan.find({ isActive: true }).populate('category');
+    res.json({ categories, plans });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get all categories and plans
 router.get('/', auth, async (req, res) => {
   try {

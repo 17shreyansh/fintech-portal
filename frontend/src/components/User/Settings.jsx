@@ -226,24 +226,12 @@ const Settings = () => {
                       </div>
                     </Col>
                   </Row>
-                  <Row gutter={16}>
-                    <Col xs={24} sm={12}>
-                      <div style={{ marginBottom: 16 }}>
-                        <Text strong>Branch Name</Text>
-                        <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px', marginTop: 4 }}>
-                          {userProfile.bankDetails.branchName}
-                        </div>
-                      </div>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                      <div style={{ marginBottom: 16 }}>
-                        <Text strong>UPI ID</Text>
-                        <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px', marginTop: 4, fontFamily: 'monospace' }}>
-                          {userProfile.bankDetails.upiId}
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
+                  <div style={{ marginBottom: 16 }}>
+                    <Text strong>UPI ID</Text>
+                    <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px', marginTop: 4, fontFamily: 'monospace' }}>
+                      {userProfile.bankDetails.upiId}
+                    </div>
+                  </div>
                   <Alert
                     message="Bank Details Locked"
                     description="For security reasons, bank details can only be modified by admin support. Contact support if you need to update your bank information."

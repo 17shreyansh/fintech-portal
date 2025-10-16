@@ -14,8 +14,7 @@ router.post('/register', [
   body('bankDetails.accountHolderName').notEmpty().withMessage('Account holder name is required'),
   body('bankDetails.accountNumber').isLength({ min: 9, max: 18 }).withMessage('Account number must be 9-18 digits'),
   body('bankDetails.ifscCode').matches(/^[A-Z]{4}0[A-Z0-9]{6}$/).withMessage('Invalid IFSC code format'),
-  body('bankDetails.bankName').notEmpty().withMessage('Bank name is required'),
-  body('bankDetails.branchName').notEmpty().withMessage('Branch name is required')
+  body('bankDetails.bankName').notEmpty().withMessage('Bank name is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);

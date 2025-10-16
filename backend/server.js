@@ -10,6 +10,7 @@ const adminRoutes = require('./routes/admin');
 const planRoutes = require('./routes/plans');
 const transactionRoutes = require('./routes/transactions');
 const supportRoutes = require('./routes/support');
+const contactRoutes = require('./routes/contact');
 const { startCronJobs } = require('./services/cronJobs');
 
 const app = express();
@@ -45,6 +46,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -30,7 +30,6 @@ const seedData = async () => {
         accountNumber: '1234567890',
         ifscCode: 'HDFC0000001',
         bankName: 'HDFC Bank',
-        branchName: 'Main Branch',
         upiId: 'admin@paytm'
       }
     });
@@ -48,7 +47,6 @@ const seedData = async () => {
         accountNumber: '9876543210',
         ifscCode: 'ICICI0000001',
         bankName: 'ICICI Bank',
-        branchName: 'Test Branch',
         upiId: 'testuser@phonepe'
       }
     });

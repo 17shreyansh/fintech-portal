@@ -8,6 +8,8 @@ import {
   WalletOutlined,
   QuestionCircleOutlined,
   QrcodeOutlined,
+  ContactsOutlined,
+  SettingOutlined,
   LogoutOutlined,
   MenuOutlined
 } from '@ant-design/icons';
@@ -18,6 +20,8 @@ import PlanManagement from '../Admin/PlanManagement';
 import TransactionManagement from '../Admin/TransactionManagement';
 import SupportManagement from '../Admin/SupportManagement';
 import QRManagement from '../Admin/QRManagement';
+import ContactManagement from '../Admin/ContactManagement';
+import AdminSettings from '../Admin/AdminSettings';
 
 const { Header, Sider, Content } = Layout;
 
@@ -49,6 +53,8 @@ const AdminLayout = () => {
     { key: '/admin/transactions', icon: <WalletOutlined />, label: 'Transactions' },
     { key: '/admin/qr-settings', icon: <QrcodeOutlined />, label: 'QR Settings' },
     { key: '/admin/support', icon: <QuestionCircleOutlined />, label: 'Support Tickets' },
+    { key: '/admin/contact', icon: <ContactsOutlined />, label: 'Contact Settings' },
+    { key: '/admin/settings', icon: <SettingOutlined />, label: 'Settings' },
   ];
 
   const userMenuItems = [
@@ -125,8 +131,7 @@ const AdminLayout = () => {
           placement="left"
           onClose={() => setMobileMenuVisible(false)}
           open={mobileMenuVisible}
-          bodyStyle={{ padding: 0 }}
-          headerStyle={{ background: '#001529', color: 'white' }}
+          styles={{ body: { padding: 0 }, header: { background: '#001529', color: 'white' } }}
         >
           <div style={{ background: '#001529', minHeight: '100%' }}>
             <Menu
@@ -154,6 +159,8 @@ const AdminLayout = () => {
               <Route path="/transactions" element={<TransactionManagement />} />
               <Route path="/qr-settings" element={<QRManagement />} />
               <Route path="/support" element={<SupportManagement />} />
+              <Route path="/contact" element={<ContactManagement />} />
+              <Route path="/settings" element={<AdminSettings />} />
             </Routes>
           </div>
         </Content>
@@ -225,6 +232,8 @@ const AdminLayout = () => {
             <Route path="/transactions" element={<TransactionManagement />} />
             <Route path="/qr-settings" element={<QRManagement />} />
             <Route path="/support" element={<SupportManagement />} />
+            <Route path="/contact" element={<ContactManagement />} />
+            <Route path="/settings" element={<AdminSettings />} />
           </Routes>
         </Content>
       </Layout>
