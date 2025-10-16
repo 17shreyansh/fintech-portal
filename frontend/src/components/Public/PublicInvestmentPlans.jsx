@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Card, Row, Col, Button, Typography, Tag, Spin, message, Space } from 'antd';
 import { Link } from 'react-router-dom';
-import { 
-  TrophyOutlined, 
+import {
+  TrophyOutlined,
   ClockCircleOutlined,
   ArrowRightOutlined
 } from '@ant-design/icons';
@@ -10,6 +10,7 @@ import axios from 'axios';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import './PublicInvestmentPlans.css';
+import inhImage from '../../assets/inh.jpeg';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -28,7 +29,7 @@ const PublicInvestmentPlans = () => {
     try {
       const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
       console.log('Fetching plans from:', `${apiUrl}/api/plans/public`);
-      
+
       // Test if backend is reachable
       try {
         await axios.get(`${apiUrl}/health`);
@@ -37,7 +38,7 @@ const PublicInvestmentPlans = () => {
         console.error('Backend health check failed:', healthError);
         throw new Error('Backend server is not running');
       }
-      
+
       const response = await axios.get(`${apiUrl}/api/plans/public`);
       console.log('API Response:', response.data);
       setPlans(response.data.plans || []);
@@ -54,8 +55,8 @@ const PublicInvestmentPlans = () => {
     }
   };
 
-  const filteredPlans = selectedCategory === 'all' 
-    ? plans 
+  const filteredPlans = selectedCategory === 'all'
+    ? plans
     : plans.filter(plan => plan.category._id === selectedCategory);
 
   const formatDuration = (duration) => {
@@ -89,12 +90,21 @@ const PublicInvestmentPlans = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="plans-hero">
+      <section className="plans-hero" style={{
+        backgroundImage: `linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.8) 100%), url(${inhImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        color: 'white',
+        padding: '6rem 0',
+        textAlign: 'center',
+        position: 'relative'
+      }}>
         <div className="container">
           <div className="hero-content">
             <Title level={1} className="hero-title">Investment Plans</Title>
             <Paragraph className="hero-description">
-              Choose from our carefully curated investment plans designed to maximize your returns 
+              Choose from our carefully curated investment plans designed to maximize your returns
               while managing risk effectively.
             </Paragraph>
           </div>
@@ -107,7 +117,7 @@ const PublicInvestmentPlans = () => {
           {/* Category Filter */}
           <div className="category-filter">
             <Space wrap>
-              <Button 
+              <Button
                 type={selectedCategory === 'all' ? 'primary' : 'default'}
                 onClick={() => setSelectedCategory('all')}
                 className="category-btn"
