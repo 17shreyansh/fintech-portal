@@ -27,13 +27,13 @@ const LandingPage = () => {
   const features = [
     {
       icon: <SafetyCertificateOutlined className="feature-icon" />,
-      title: "Secure Gold Investments",
-      description: "Bank-grade security with encrypted transactions and secure gold investment management"
+      title: "Secure Investments",
+      description: "Bank-grade security with encrypted transactions and secure investment management"
     },
     {
       icon: <LineChartOutlined className="feature-icon" />,
       title: "High Returns",
-      description: "Competitive returns across multiple gold investment categories with transparent pricing"
+      description: "Competitive returns across multiple investment categories with transparent pricing"
     },
     {
       icon: <SafetyOutlined className="feature-icon" />,
@@ -58,11 +58,11 @@ const LandingPage = () => {
             <Col xs={24} lg={12}>
               <div className="hero-content">
                 <Title level={1} className="hero-title">
-                  Smart Gold Investments for Your <span className="highlight">Financial Future</span>
+                  Smart Investment Solutions for Your <span className="highlight">Financial Future</span>
                 </Title>
                 <Paragraph className="hero-description">
-                  Join thousands of investors who trust our platform for secure, high-return gold investment opportunities. 
-                  Start building your wealth today with our expertly curated gold investment plans.
+                  Join thousands of investors who trust our platform for secure, high-return investment opportunities. 
+                  Start building your wealth today with our expertly curated investment plans.
                 </Paragraph>
                 <Space size="large" className="hero-actions">
                   <Link to="/register">

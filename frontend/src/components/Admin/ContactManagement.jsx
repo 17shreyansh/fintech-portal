@@ -17,7 +17,7 @@ const ContactManagement = () => {
 
   const fetchContactSettings = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URLL}/api/contact`);
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/contact`);
       form.setFieldsValue(response.data);
     } catch (error) {
       message.error('Failed to fetch contact settings');
@@ -30,7 +30,7 @@ const ContactManagement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`${import.meta.env.VITE_API_BASE_URLL}/api/contact`, values, {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/contact`, values, {
         headers: { Authorization: `Bearer ${token}` }
       });
       message.success('Contact settings updated successfully');

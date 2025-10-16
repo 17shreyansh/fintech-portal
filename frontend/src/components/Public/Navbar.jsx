@@ -10,7 +10,7 @@ const Navbar = () => {
         <div className="navbar-content">
           <Link to="/" className="logo">
             <DollarOutlined className="logo-icon" />
-            <span className="logo-text">Adhani Gold</span>
+            <span className="logo-text">Adhani Investment Group</span>
           </Link>
           <nav className="nav-menu">
             <Link to="/" className="nav-link">

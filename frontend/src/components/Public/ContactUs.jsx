@@ -27,15 +27,15 @@ const ContactUs = () => {
 
   const fetchContactInfo = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URLL}/api/contact`);
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/contact`);
       setContactInfo(response.data);
     } catch (error) {
       console.error('Failed to fetch contact info:', error);
       // Fallback to default data
       setContactInfo({
-        email: 'support@fintech.com',
-        phone: '+1 (555) 123-4567',
-        address: '123 Financial District, New York, NY 10004',
+        email: 'support@adhanigroup.com',
+        phone: '+91 98765 43210',
+        address: 'Mumbai, India',
         workingHours: 'Mon-Fri 9:00 AM - 6:00 PM',
         workingHoursDescription: 'We are here to help during business hours'
       });

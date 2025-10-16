@@ -16,7 +16,7 @@ const Footer = () => {
 
   const fetchContactInfo = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URLL}/api/contact`);
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/contact`);
       setContactInfo(response.data);
     } catch (error) {
       console.error('Failed to fetch contact info:', error);
@@ -30,10 +30,10 @@ const Footer = () => {
             <div className="footer-section">
               <Link to="/" className="footer-logo">
                 <DollarOutlined className="logo-icon" />
-                <span className="logo-text">Adhani Gold</span>
+                <span className="logo-text">Adhani Investment Group</span>
               </Link>
               <Paragraph className="footer-description">
-                Your trusted partner for gold investments and financial growth
+                Your trusted partner for investment solutions and financial growth
               </Paragraph>
             </div>
           </Col>
@@ -53,7 +53,7 @@ const Footer = () => {
             <div className="footer-section">
               <Title level={5} className="footer-title">Contact Info</Title>
               <div className="contact-info">
-                <p>Email: {contactInfo?.email || 'support@adhanigold.com'}</p>
+                <p>Email: {contactInfo?.email || 'support@adhanigroup.com'}</p>
                 <p>Phone: {contactInfo?.phone || '+91 98765 43210'}</p>
                 <p>Address: {contactInfo?.address || 'Mumbai, India'}</p>
               </div>
@@ -61,7 +61,7 @@ const Footer = () => {
           </Col>
         </Row>
         <div className="footer-bottom">
-          <p>&copy; 2024 FinTech Pro. All rights reserved.</p>
+          <p>&copy; 2024 Adhani Investment Group. All rights reserved.</p>
         </div>
       </div>
     </footer>

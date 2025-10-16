@@ -88,10 +88,10 @@ const AboutUs = () => {
       <section className="about-hero">
         <div className="container">
           <div className="hero-content">
-            <Title level={1} className="hero-title">About Adhani Gold</Title>
+            <Title level={1} className="hero-title">About Adhani Investment Group</Title>
             <Paragraph className="hero-description">
-              We are a leading gold investment platform dedicated to providing secure, profitable, and accessible 
-              gold investment opportunities for individuals looking to build their financial future.
+              We are a leading investment platform dedicated to providing secure, profitable, and accessible 
+              investment opportunities for individuals looking to build their financial future.
             </Paragraph>
           </div>
         </div>
@@ -127,12 +127,12 @@ const AboutUs = () => {
               <div className="mission-content">
                 <Title level={2} className="section-title">Our Mission</Title>
                 <Paragraph className="mission-text">
-                  To democratize gold investment by providing accessible, secure, and profitable gold investment 
+                  To democratize investment by providing accessible, secure, and profitable investment 
                   opportunities for everyone, regardless of their financial background or investment experience.
                 </Paragraph>
                 <Paragraph className="mission-text">
                   We believe that everyone deserves the opportunity to build wealth and secure their financial 
-                  future through smart gold investments and expert guidance.
+                  future through smart investments and expert guidance.
                 </Paragraph>
               </div>
             </Col>

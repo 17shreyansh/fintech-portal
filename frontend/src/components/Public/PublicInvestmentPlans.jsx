@@ -26,7 +26,7 @@ const PublicInvestmentPlans = () => {
 
   const fetchPlans = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_BASE_URLL || 'http://localhost:5000';
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
       console.log('Fetching plans from:', `${apiUrl}/api/plans/public`);
       
       // Test if backend is reachable
@@ -94,7 +94,7 @@ const PublicInvestmentPlans = () => {
           <div className="hero-content">
             <Title level={1} className="hero-title">Investment Plans</Title>
             <Paragraph className="hero-description">
-              Choose from our carefully curated gold investment plans designed to maximize your returns 
+              Choose from our carefully curated investment plans designed to maximize your returns 
               while managing risk effectively.
             </Paragraph>
           </div>
