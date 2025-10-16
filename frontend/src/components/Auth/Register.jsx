@@ -150,8 +150,7 @@ const Register = () => {
                   name={['bankDetails', 'ifscCode']}
                   label="IFSC Code"
                   rules={[
-                    { required: true, message: 'Please enter IFSC code!' },
-                    { pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: 'Invalid IFSC code format!' }
+                    { required: true, message: 'Please enter IFSC code!' }
                   ]}
                 >
                   <Input placeholder="Enter IFSC code" className="register-input" style={{ textTransform: 'uppercase' }} />

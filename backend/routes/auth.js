@@ -13,7 +13,7 @@ router.post('/register', [
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('bankDetails.accountHolderName').notEmpty().withMessage('Account holder name is required'),
   body('bankDetails.accountNumber').isLength({ min: 9, max: 18 }).withMessage('Account number must be 9-18 digits'),
-  body('bankDetails.ifscCode').matches(/^[A-Z]{4}0[A-Z0-9]{6}$/).withMessage('Invalid IFSC code format'),
+  body('bankDetails.ifscCode').notEmpty().withMessage('IFSC code is required'),
   body('bankDetails.bankName').notEmpty().withMessage('Bank name is required')
 ], async (req, res) => {
   try {

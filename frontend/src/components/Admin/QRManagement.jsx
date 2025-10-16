@@ -115,7 +115,6 @@ const QRManagement = () => {
             label="UPI ID"
             rules={[
               { required: true, message: 'Please enter UPI ID!' },
-              { pattern: /^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/, message: 'Invalid UPI ID format!' }
             ]}
           >
             <Input 

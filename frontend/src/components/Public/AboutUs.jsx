@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import headerBg from '../../assets/header.webp';
 import './AboutUs.css';
 
 const { Title, Paragraph } = Typography;

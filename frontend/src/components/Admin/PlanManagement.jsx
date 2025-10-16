@@ -384,12 +384,6 @@ const PlanManagement = () => {
                       if (isNaN(numValue) || numValue <= 0) {
                         return Promise.reject('Please enter a valid amount');
                       }
-                      if (numValue < 1000) {
-                        return Promise.reject('Minimum amount is ₹1,000');
-                      }
-                      if (numValue > 100000000) {
-                        return Promise.reject('Maximum amount is ₹10,00,00,000');
-                      }
                       return Promise.resolve();
                     }
                   }
@@ -398,9 +392,7 @@ const PlanManagement = () => {
                 <Input 
                   type="number" 
                   prefix="₹" 
-                  placeholder="50000" 
-                  min={1000}
-                  max={100000000}
+                  placeholder="Enter any amount" 
                 />
               </Form.Item>
             </Col>

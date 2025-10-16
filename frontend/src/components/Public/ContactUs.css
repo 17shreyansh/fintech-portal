@@ -104,6 +104,8 @@
   color: white !important;
   margin-bottom: 1.5rem !important;
   letter-spacing: -0.02em !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
 }
 
 .hero-description {
