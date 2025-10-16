@@ -47,11 +47,11 @@ const UserLayout = () => {
 
   const menuItems = [
     { key: '/dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
-    { key: '/plans', icon: <FundProjectionScreenOutlined />, label: 'Investment Plans' },
-    { key: '/wallet', icon: <WalletOutlined />, label: 'Wallet' },
-    { key: '/withdrawals', icon: <HistoryOutlined />, label: 'Withdrawals' },
-    { key: '/support', icon: <QuestionCircleOutlined />, label: 'Support' },
-    { key: '/settings', icon: <SettingOutlined />, label: 'Settings' },
+    { key: '/dashboard/plans', icon: <FundProjectionScreenOutlined />, label: 'Investment Plans' },
+    { key: '/dashboard/wallet', icon: <WalletOutlined />, label: 'Wallet' },
+    { key: '/dashboard/withdrawals', icon: <HistoryOutlined />, label: 'Withdrawals' },
+    { key: '/dashboard/support', icon: <QuestionCircleOutlined />, label: 'Support' },
+    { key: '/dashboard/settings', icon: <SettingOutlined />, label: 'Settings' },
   ];
 
   const userMenuItems = [
