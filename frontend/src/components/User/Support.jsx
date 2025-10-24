@@ -36,10 +36,12 @@ const Support = () => {
   const [loading, setLoading] = useState(true);
   const [ticketModal, setTicketModal] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [contactSettings, setContactSettings] = useState(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
     fetchTickets();
+    fetchContactSettings();
   }, []);
 
   const fetchTickets = async () => {
@@ -50,6 +52,15 @@ const Support = () => {
       console.error('Error fetching tickets:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchContactSettings = async () => {
+    try {
+      const response = await api.get('/contact');
+      setContactSettings(response.data);
+    } catch (error) {
+      console.error('Error fetching contact settings:', error);
     }
   };
 
@@ -273,9 +284,9 @@ const Support = () => {
                   📞 Contact Information
                 </Text>
                 <Text style={{ color: '#8c8c8c' }}>
-                  Email: support@fintech.com<br/>
-                  Phone: +1 (555) 123-4567<br/>
-                  Hours: 24/7 Support
+                  Email: {contactSettings?.email || 'support@fintech.com'}<br/>
+                  Phone: {contactSettings?.phone || '+1 (555) 123-4567'}<br/>
+                  Hours: {contactSettings?.workingHours || '24/7 Support'}
                 </Text>
               </div>
               
@@ -284,10 +295,16 @@ const Support = () => {
                   🚀 Common Issues
                 </Text>
                 <Text style={{ color: '#8c8c8c' }}>
-                  • Deposit not reflecting<br/>
-                  • Withdrawal delays<br/>
-                  • Investment questions<br/>
-                  • Account security
+                  {contactSettings?.commonIssues?.map((issue, index) => (
+                    <span key={index}>• {issue}<br/></span>
+                  )) || (
+                    <>
+                      • Deposit not reflecting<br/>
+                      • Withdrawal delays<br/>
+                      • Investment questions<br/>
+                      • Account security
+                    </>
+                  )}
                 </Text>
               </div>
               

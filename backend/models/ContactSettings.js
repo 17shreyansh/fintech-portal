@@ -24,6 +24,15 @@ const contactSettingsSchema = new mongoose.Schema({
   workingHoursDescription: {
     type: String,
     default: 'Saturday: 10:00 AM - 4:00 PM'
+  },
+  commonIssues: {
+    type: [String],
+    default: [
+      'Deposit not reflecting',
+      'Withdrawal delays',
+      'Investment questions',
+      'Account security'
+    ]
   }
 }, {
   timestamps: true

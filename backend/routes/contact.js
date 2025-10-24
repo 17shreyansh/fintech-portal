@@ -27,7 +27,7 @@ router.put('/', auth, async (req, res) => {
       return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
 
-    const { email, phone, address, workingHours, workingHoursDescription } = req.body;
+    const { email, phone, address, workingHours, workingHoursDescription, commonIssues } = req.body;
 
     let contactSettings = await ContactSettings.findOne();
     
@@ -40,6 +40,7 @@ router.put('/', auth, async (req, res) => {
     contactSettings.address = address || contactSettings.address;
     contactSettings.workingHours = workingHours || contactSettings.workingHours;
     contactSettings.workingHoursDescription = workingHoursDescription || contactSettings.workingHoursDescription;
+    contactSettings.commonIssues = commonIssues || contactSettings.commonIssues;
 
     await contactSettings.save();
 

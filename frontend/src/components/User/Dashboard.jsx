@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Row, Col, Card, Statistic, Table, Tag, Typography, Spin, Empty, Progress, Divider, Space, Button } from 'antd';
 import { WalletOutlined, FundProjectionScreenOutlined, HistoryOutlined, TrophyOutlined, CalendarOutlined, DollarOutlined, RiseOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { formatCurrency } from '../../utils/currency';
 import toast from 'react-hot-toast';
@@ -243,9 +244,11 @@ const Dashboard = () => {
                 description="No investments yet" 
                 style={{ padding: '60px 0' }}
               >
-                <Button type="primary" onClick={() => window.location.href = '/plans'}>
-                  Start Investing
-                </Button>
+                <Link to="/dashboard/plans">
+                  <Button type="primary">
+                    Start Investing
+                    </Button>
+                </Link>
               </Empty>
             )}
           </Card>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, Form, Input, Button, message, Typography, Space } from 'antd';
-import { SaveOutlined, MailOutlined, PhoneOutlined, EnvironmentOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { Card, Form, Input, Button, message, Typography, Space, Tag } from 'antd';
+import { SaveOutlined, MailOutlined, PhoneOutlined, EnvironmentOutlined, ClockCircleOutlined, QuestionCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 const { Title } = Typography;
@@ -18,7 +18,12 @@ const ContactManagement = () => {
   const fetchContactSettings = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/contact`);
-      form.setFieldsValue(response.data);
+      const data = response.data;
+      // Ensure commonIssues is an array for the form
+      if (!data.commonIssues || !Array.isArray(data.commonIssues)) {
+        data.commonIssues = ['Deposit not reflecting', 'Withdrawal delays', 'Investment questions', 'Account security'];
+      }
+      form.setFieldsValue(data);
     } catch (error) {
       message.error('Failed to fetch contact settings');
     } finally {
@@ -110,6 +115,39 @@ const ContactManagement = () => {
             <Input 
               placeholder="Saturday: 10:00 AM - 4:00 PM" 
             />
+          </Form.Item>
+
+          <Form.Item
+            name="commonIssues"
+            label="Common Issues (for Quick Help)"
+            tooltip="These will be displayed in the Support page Quick Help section"
+          >
+            <Form.List name="commonIssues">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                      <Form.Item
+                        {...restField}
+                        name={name}
+                        rules={[{ required: true, message: 'Please enter issue' }]}
+                        style={{ flex: 1, marginBottom: 0 }}
+                      >
+                        <Input placeholder="e.g., Deposit not reflecting" />
+                      </Form.Item>
+                      <Button onClick={() => remove(name)} type="text" danger>
+                        Remove
+                      </Button>
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                      Add Common Issue
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
           </Form.Item>
 
           <Form.Item>
