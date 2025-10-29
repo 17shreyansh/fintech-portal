@@ -132,7 +132,7 @@ router.post('/buy/:planId', auth, async (req, res) => {
       user: req.user.id,
       plan: plan._id,
       investedAmount: plan.amount,
-      expectedReturn: plan.expectedReturn,
+      totalMaturityAmount: plan.totalMaturityAmount,
       maturityDate
     });
     await investment.save();
@@ -152,7 +152,7 @@ router.post('/buy/:planId', auth, async (req, res) => {
     console.log(`   User: ${user.email}`);
     console.log(`   Plan: ${plan.title}`);
     console.log(`   Amount: ₹${plan.amount.toLocaleString()}`);
-    console.log(`   Expected Return: ₹${plan.expectedReturn.toLocaleString()}`);
+    console.log(`   Total Maturity Amount: ₹${plan.totalMaturityAmount.toLocaleString()}`);
     console.log(`   Maturity Date: ${maturityDate.toLocaleDateString('en-IN')}`);
     console.log(`   Remaining Wallet Balance: ₹${user.walletBalance.toLocaleString()}`);
 
@@ -185,7 +185,7 @@ router.get('/admin/all', adminAuth, async (req, res) => {
 // Admin: Create plan
 router.post('/', adminAuth, async (req, res) => {
   try {
-    const { title, description, category, amount, expectedReturn, duration, oneTimeOnly } = req.body;
+    const { title, description, category, amount, totalMaturityAmount, duration, oneTimeOnly } = req.body;
     
     // Validate category exists
     const categoryExists = await PlanCategory.findById(category);
@@ -194,7 +194,7 @@ router.post('/', adminAuth, async (req, res) => {
     }
     
     const plan = new InvestmentPlan({
-      title, description, category, amount, expectedReturn, duration, oneTimeOnly
+      title, description, category, amount, totalMaturityAmount, duration, oneTimeOnly
     });
     await plan.save();
     
@@ -208,11 +208,11 @@ router.post('/', adminAuth, async (req, res) => {
 // Admin: Update plan
 router.put('/:id', adminAuth, async (req, res) => {
   try {
-    const { title, description, category, amount, expectedReturn, duration, isActive, oneTimeOnly } = req.body;
+    const { title, description, category, amount, totalMaturityAmount, duration, isActive, oneTimeOnly } = req.body;
     
     const plan = await InvestmentPlan.findByIdAndUpdate(
       req.params.id,
-      { title, description, category, amount, expectedReturn, duration, isActive, oneTimeOnly },
+      { title, description, category, amount, totalMaturityAmount, duration, isActive, oneTimeOnly },
       { new: true }
     ).populate('category');
     

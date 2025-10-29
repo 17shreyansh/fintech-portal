@@ -16,7 +16,7 @@ const PlanManagement = () => {
   const [editingPlan, setEditingPlan] = useState(null);
   const [planForm] = Form.useForm();
   const [activeTab, setActiveTab] = useState('all');
-  const [calculatedReturn, setCalculatedReturn] = useState(0);
+  const [totalMaturityAmount, setTotalMaturityAmount] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -35,32 +35,16 @@ const PlanManagement = () => {
     }
   };
 
-  const calculateTotalReturn = (dailyProfit, duration) => {
-    if (!dailyProfit || !duration?.value || !duration?.unit) return 0;
-    
-    let totalDays = 0;
-    switch(duration.unit) {
-      case 'days': totalDays = duration.value; break;
-      case 'months': totalDays = duration.value * 30; break;
-      case 'years': totalDays = duration.value * 365; break;
-      default: totalDays = duration.value;
-    }
-    
-    return dailyProfit * totalDays;
-  };
-
   const handleFormChange = () => {
-    const dailyProfit = planForm.getFieldValue('dailyProfit');
-    const duration = planForm.getFieldValue('duration');
-    const totalReturn = calculateTotalReturn(dailyProfit, duration);
-    setCalculatedReturn(totalReturn);
+    const amount = planForm.getFieldValue('amount');
+    const maturityAmount = planForm.getFieldValue('totalMaturityAmount');
+    setTotalMaturityAmount(maturityAmount || 0);
   };
 
   const handleCreatePlan = async (values) => {
     try {
       const planData = {
         ...values,
-        expectedReturn: calculatedReturn,
         oneTimeOnly: values.oneTimeOnly || false
       };
       
@@ -76,7 +60,7 @@ const PlanManagement = () => {
       setPlanModal(false);
       setEditingPlan(null);
       planForm.resetFields();
-      setCalculatedReturn(0);
+      setTotalMaturityAmount(0);
       fetchData();
     } catch (error) {
       console.error('Plan submission error:', error);
@@ -86,20 +70,18 @@ const PlanManagement = () => {
 
   const handleEditPlan = (plan) => {
     setEditingPlan(plan);
-    const totalDays = plan.durationInDays || calculateTotalReturn(1, plan.duration);
-    const dailyProfit = totalDays > 0 ? plan.expectedReturn / totalDays : 0;
     
     planForm.setFieldsValue({
       title: plan.title,
       description: plan.description,
       category: plan.category._id,
       amount: plan.amount,
-      dailyProfit: dailyProfit,
+      totalMaturityAmount: plan.totalMaturityAmount,
       duration: plan.duration,
       isActive: plan.isActive,
       oneTimeOnly: plan.oneTimeOnly
     });
-    setCalculatedReturn(plan.expectedReturn);
+    setTotalMaturityAmount(plan.totalMaturityAmount);
     setPlanModal(true);
   };
 
@@ -175,11 +157,11 @@ const PlanManagement = () => {
       sorter: (a, b) => a.amount - b.amount
     },
     {
-      title: 'Expected Return',
-      dataIndex: 'expectedReturn',
-      key: 'expectedReturn',
+      title: 'Total Maturity Amount',
+      dataIndex: 'totalMaturityAmount',
+      key: 'totalMaturityAmount',
       render: (amount) => <Text strong style={{ color: '#52c41a' }}>{formatCurrency(amount)}</Text>,
-      sorter: (a, b) => a.expectedReturn - b.expectedReturn
+      sorter: (a, b) => a.totalMaturityAmount - b.totalMaturityAmount
     },
     {
       title: 'Duration',
@@ -287,7 +269,7 @@ const PlanManagement = () => {
                 onClick={() => {
                   setEditingPlan(null);
                   planForm.resetFields();
-                  setCalculatedReturn(0);
+                  setTotalMaturityAmount(0);
                   setPlanModal(true);
                 }}
               >
@@ -332,7 +314,7 @@ const PlanManagement = () => {
           setPlanModal(false);
           setEditingPlan(null);
           planForm.resetFields();
-          setCalculatedReturn(0);
+          setTotalMaturityAmount(0);
         }}
         footer={null}
         width={700}
@@ -392,24 +374,29 @@ const PlanManagement = () => {
                 <Input 
                   type="number" 
                   prefix="₹" 
-                  placeholder="Enter any amount" 
+                  placeholder="100" 
+                  onChange={handleFormChange}
                 />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="dailyProfit"
-                label="Daily Profit (₹)"
+                name="totalMaturityAmount"
+                label="Total Maturity Amount (₹)"
                 rules={[
-                  { required: true, message: 'Please enter daily profit' },
+                  { required: true, message: 'Please enter total maturity amount' },
                   {
                     validator: (_, value) => {
                       const numValue = Number(value);
+                      const investmentAmount = Number(planForm.getFieldValue('amount'));
                       if (!value) {
-                        return Promise.reject('Please enter daily profit');
+                        return Promise.reject('Please enter total maturity amount');
                       }
                       if (isNaN(numValue) || numValue <= 0) {
                         return Promise.reject('Please enter a valid amount');
+                      }
+                      if (investmentAmount && numValue <= investmentAmount) {
+                        return Promise.reject('Maturity amount must be greater than investment amount');
                       }
                       return Promise.resolve();
                     }
@@ -419,7 +406,7 @@ const PlanManagement = () => {
                 <Input 
                   type="number" 
                   prefix="₹" 
-                  placeholder="100" 
+                  placeholder="1000" 
                   onChange={handleFormChange}
                 />
               </Form.Item>
@@ -479,7 +466,7 @@ const PlanManagement = () => {
             )}
           </Row>
 
-          {calculatedReturn > 0 && (
+          {totalMaturityAmount > 0 && (
             <Row>
               <Col span={24}>
                 <div style={{ 
@@ -490,7 +477,12 @@ const PlanManagement = () => {
                   marginBottom: '16px' 
                 }}>
                   <Text strong style={{ color: '#52c41a' }}>
-                    Calculated Total Return: {formatCurrency(calculatedReturn)}
+                    Total Maturity Amount: {formatCurrency(totalMaturityAmount)}
+                    {planForm.getFieldValue('amount') && (
+                      <span style={{ marginLeft: 16, color: '#1890ff' }}>
+                        Profit: {formatCurrency(totalMaturityAmount - planForm.getFieldValue('amount'))}
+                      </span>
+                    )}
                   </Text>
                 </div>
               </Col>
@@ -503,7 +495,7 @@ const PlanManagement = () => {
                 setPlanModal(false);
                 setEditingPlan(null);
                 planForm.resetFields();
-                setCalculatedReturn(0);
+                setTotalMaturityAmount(0);
               }}>
                 Cancel
               </Button>

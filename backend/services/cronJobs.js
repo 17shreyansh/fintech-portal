@@ -27,31 +27,31 @@ const processMaturedInvestments = cron.schedule(cronExpression, async () => {
         // Update investment status
         investment.status = 'completed';
         investment.completedAt = new Date();
-        investment.actualReturn = investment.expectedReturn;
+        investment.actualMaturityAmount = investment.totalMaturityAmount;
         await investment.save();
 
-        // Credit user wallet with principal + returns
+        // Credit user wallet with total maturity amount
         const user = await User.findById(investment.user._id);
-        const totalMaturityAmount = investment.investedAmount + investment.expectedReturn;
+        const profitAmount = investment.totalMaturityAmount - investment.investedAmount;
         
-        user.walletBalance += totalMaturityAmount;
+        user.walletBalance += investment.totalMaturityAmount;
         await user.save();
 
         // Create return transaction for the full maturity amount
         await new Transaction({
           user: investment.user._id,
           type: 'return',
-          amount: totalMaturityAmount,
+          amount: investment.totalMaturityAmount,
           status: 'approved',
-          description: `Investment matured: ${investment.plan.title} - Principal: ₹${investment.investedAmount.toLocaleString()} + Returns: ₹${investment.expectedReturn.toLocaleString()}`
+          description: `Investment matured: ${investment.plan.title} - Principal: ₹${investment.investedAmount.toLocaleString()} + Profit: ₹${profitAmount.toLocaleString()}`
         }).save();
 
         console.log(`✅ Investment ${investment._id} matured successfully:`);
         console.log(`   User: ${investment.user.email}`);
         console.log(`   Plan: ${investment.plan.title}`);
         console.log(`   Principal: ₹${investment.investedAmount.toLocaleString()}`);
-        console.log(`   Returns: ₹${investment.expectedReturn.toLocaleString()}`);
-        console.log(`   Total Credited: ₹${totalMaturityAmount.toLocaleString()}`);
+        console.log(`   Profit: ₹${profitAmount.toLocaleString()}`);
+        console.log(`   Total Credited: ₹${investment.totalMaturityAmount.toLocaleString()}`);
         console.log(`   New Wallet Balance: ₹${user.walletBalance.toLocaleString()}`);
         
       } catch (error) {

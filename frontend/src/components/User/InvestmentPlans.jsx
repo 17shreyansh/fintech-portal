@@ -283,9 +283,9 @@ const InvestmentPlans = () => {
           <div>
             <h3>{selectedPlan.category?.icon} {selectedPlan.title}</h3>
             <p>Investment: {formatCurrency(selectedPlan.amount)}</p>
-            <p>Expected Return: {formatCurrency(selectedPlan.expectedReturn)}</p>
+            <p>You Will Get: {formatCurrency(selectedPlan.totalMaturityAmount)}</p>
+            <p>Profit: {formatCurrency(selectedPlan.totalMaturityAmount - selectedPlan.amount)}</p>
             <p>Duration: {selectedPlan.duration?.value} {selectedPlan.duration?.unit}</p>
-            <p><strong>Total Maturity: {formatCurrency(selectedPlan.amount + selectedPlan.expectedReturn)}</strong></p>
           </div>
         )}
       </Modal>

@@ -90,8 +90,11 @@ const PlanCard = ({ plan, onBuyPlan, loading = false }) => {
         <Text style={{ display: 'block', color: '#595959' }}>
           Investment : {formatCurrency(plan.amount)}
         </Text>
-        <Text style={{ display: 'block', color: '#595959' }}>
-          Total Return : {formatCurrency(plan.expectedReturn)}
+        <Text style={{ display: 'block', color: '#52c41a', fontWeight: 'bold' }}>
+          You Get : {formatCurrency(plan.totalMaturityAmount)}
+        </Text>
+        <Text style={{ display: 'block', color: '#1890ff', fontSize: '12px' }}>
+          Profit : {formatCurrency(plan.totalMaturityAmount - plan.amount)}
         </Text>
       </div>
 

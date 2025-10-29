@@ -67,13 +67,15 @@ const Dashboard = () => {
       ),
     },
     {
-      title: 'Expected Return',
-      dataIndex: 'expectedReturn',
-      key: 'expectedReturn',
-      render: (returns) => (
+      title: 'You Will Get',
+      key: 'totalMaturityAmount',
+      render: (_, record) => (
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontWeight: 'bold', color: '#52c41a' }}>
-            +{formatCurrency(returns)}
+            {formatCurrency(record.totalMaturityAmount)}
+          </div>
+          <div style={{ fontSize: '12px', color: '#1890ff' }}>
+            Profit: +{formatCurrency(record.totalMaturityAmount - record.investedAmount)}
           </div>
         </div>
       ),
@@ -202,10 +204,10 @@ const Dashboard = () => {
         <Col xs={24} sm={12} lg={6}>
           <Card className="stat-card">
             <Statistic
-              title="Expected Returns"
+              title="Total Returns"
               value={dashboardData.investments
                 .filter(inv => inv.status === 'active')
-                .reduce((sum, inv) => sum + (inv.expectedReturn || 0), 0)
+                .reduce((sum, inv) => sum + (inv.totalMaturityAmount || 0), 0)
               }
               formatter={(value) => formatCurrency(value)}
               prefix={<HistoryOutlined style={{ color: '#fa8c16' }} />}

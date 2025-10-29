@@ -62,7 +62,7 @@ const seedData = async () => {
 
     const createdCategories = await PlanCategory.insertMany(categories);
 
-    // Create investment plans with expected return amounts
+    // Create investment plans with total maturity amounts
     const plans = [
       // Silver Plans
       {
@@ -70,7 +70,7 @@ const seedData = async () => {
         description: 'Perfect for beginners starting their investment journey',
         category: createdCategories[0]._id,
         amount: 5000,
-        expectedReturn: 600,
+        totalMaturityAmount: 5600,
         duration: { value: 1, unit: 'months' }
       },
       {
@@ -78,7 +78,7 @@ const seedData = async () => {
         description: 'Steady growth with moderate risk',
         category: createdCategories[0]._id,
         amount: 15000,
-        expectedReturn: 2700,
+        totalMaturityAmount: 17700,
         duration: { value: 2, unit: 'months' }
       },
       {
@@ -86,7 +86,7 @@ const seedData = async () => {
         description: 'Enhanced silver plan with better returns',
         category: createdCategories[0]._id,
         amount: 25000,
-        expectedReturn: 5500,
+        totalMaturityAmount: 30500,
         duration: { value: 3, unit: 'months' }
       },
       // Gold Plans
@@ -95,7 +95,7 @@ const seedData = async () => {
         description: 'Premium investment with excellent returns',
         category: createdCategories[1]._id,
         amount: 50000,
-        expectedReturn: 14000,
+        totalMaturityAmount: 64000,
         duration: { value: 4, unit: 'months' }
       },
       {
@@ -103,7 +103,7 @@ const seedData = async () => {
         description: 'High-value gold investment plan',
         category: createdCategories[1]._id,
         amount: 100000,
-        expectedReturn: 35000,
+        totalMaturityAmount: 135000,
         duration: { value: 6, unit: 'months' }
       },
       {
@@ -111,7 +111,7 @@ const seedData = async () => {
         description: 'Top-tier gold investment opportunity',
         category: createdCategories[1]._id,
         amount: 200000,
-        expectedReturn: 84000,
+        totalMaturityAmount: 284000,
         duration: { value: 8, unit: 'months' }
       },
       // Diamond Plans
@@ -120,7 +120,7 @@ const seedData = async () => {
         description: 'Exclusive diamond plan for elite investors',
         category: createdCategories[2]._id,
         amount: 500000,
-        expectedReturn: 275000,
+        totalMaturityAmount: 775000,
         duration: { value: 1, unit: 'years' }
       },
       {
@@ -128,7 +128,7 @@ const seedData = async () => {
         description: 'Ultra-premium diamond investment',
         category: createdCategories[2]._id,
         amount: 1000000,
-        expectedReturn: 680000,
+        totalMaturityAmount: 1680000,
         duration: { value: 18, unit: 'months' }
       },
       // AI Robot Plans
@@ -137,7 +137,7 @@ const seedData = async () => {
         description: 'AI-powered automated trading system',
         category: createdCategories[3]._id,
         amount: 75000,
-        expectedReturn: 33750,
+        totalMaturityAmount: 108750,
         duration: { value: 6, unit: 'months' }
       },
       {
@@ -145,7 +145,7 @@ const seedData = async () => {
         description: 'Advanced AI investment algorithm',
         category: createdCategories[3]._id,
         amount: 250000,
-        expectedReturn: 150000,
+        totalMaturityAmount: 400000,
         duration: { value: 1, unit: 'years' }
       },
       {
@@ -153,7 +153,7 @@ const seedData = async () => {
         description: 'Ultimate AI-driven investment solution',
         category: createdCategories[3]._id,
         amount: 750000,
-        expectedReturn: 637500,
+        totalMaturityAmount: 1387500,
         duration: { value: 2, unit: 'years' }
       }
     ];

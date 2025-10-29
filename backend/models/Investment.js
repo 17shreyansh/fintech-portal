@@ -4,8 +4,8 @@ const investmentSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   plan: { type: mongoose.Schema.Types.ObjectId, ref: 'InvestmentPlan', required: true },
   investedAmount: { type: Number, required: true },
-  expectedReturn: { type: Number, required: true },
-  actualReturn: { type: Number, default: 0 },
+  totalMaturityAmount: { type: Number, required: true },
+  actualMaturityAmount: { type: Number, default: 0 },
   maturityDate: { type: Date, required: true },
   status: { type: String, enum: ['active', 'completed', 'cancelled'], default: 'active' },
   autoReinvest: { type: Boolean, default: false },
@@ -13,9 +13,9 @@ const investmentSchema = new mongoose.Schema({
   profitLoss: { type: Number, default: 0 }
 }, { timestamps: true });
 
-// Virtual for total maturity amount
-investmentSchema.virtual('maturityAmount').get(function() {
-  return this.investedAmount + this.expectedReturn;
+// Virtual for profit amount
+investmentSchema.virtual('profitAmount').get(function() {
+  return this.totalMaturityAmount - this.investedAmount;
 });
 
 // Virtual for days remaining

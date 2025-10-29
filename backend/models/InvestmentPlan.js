@@ -5,7 +5,7 @@ const investmentPlanSchema = new mongoose.Schema({
   description: { type: String, required: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'PlanCategory', required: true },
   amount: { type: Number, required: true },
-  expectedReturn: { type: Number, required: true },
+  totalMaturityAmount: { type: Number, required: true },
   duration: {
     value: { type: Number, required: true },
     unit: { type: String, enum: ['days', 'months', 'years'], required: true }
@@ -24,9 +24,15 @@ investmentPlanSchema.virtual('durationInDays').get(function() {
   }
 });
 
+// Virtual for profit amount
+investmentPlanSchema.virtual('profitAmount').get(function() {
+  return this.totalMaturityAmount - this.amount;
+});
+
 // Virtual for return percentage
 investmentPlanSchema.virtual('returnPercent').get(function() {
-  return ((this.expectedReturn / this.amount) * 100).toFixed(2);
+  const profit = this.totalMaturityAmount - this.amount;
+  return ((profit / this.amount) * 100).toFixed(2);
 });
 
 investmentPlanSchema.set('toJSON', { virtuals: true });

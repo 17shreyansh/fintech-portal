@@ -63,8 +63,9 @@ const PublicInvestmentPlans = () => {
     return `${duration.value} ${duration.unit}`;
   };
 
-  const calculateROI = (amount, expectedReturn) => {
-    return (((expectedReturn - amount) / amount) * 100).toFixed(1);
+  const calculateROI = (amount, totalMaturityAmount) => {
+    if (!amount || !totalMaturityAmount || amount === 0) return '0';
+    return (((totalMaturityAmount - amount) / amount) * 100).toFixed(1);
   };
 
   if (loading) {
@@ -153,7 +154,7 @@ const PublicInvestmentPlans = () => {
                   <div className="plan-amount">
                     <Text className="amount-label">Investment Amount</Text>
                     <Title level={2} className="amount-value">
-                      ₹{plan.amount.toLocaleString()}
+                      ₹{plan.amount?.toLocaleString() || '0'}
                     </Title>
                   </div>
 
@@ -161,8 +162,8 @@ const PublicInvestmentPlans = () => {
                     <div className="return-item">
                       <TrophyOutlined className="return-icon" />
                       <div>
-                        <Text className="return-label">Expected Return</Text>
-                        <div className="return-value">₹{plan.expectedReturn.toLocaleString()}</div>
+                        <Text className="return-label">You Will Get</Text>
+                        <div className="return-value">₹{plan.totalMaturityAmount?.toLocaleString() || '0'}</div>
                       </div>
                     </div>
                     <div className="return-item">
@@ -176,7 +177,7 @@ const PublicInvestmentPlans = () => {
 
                   <div className="roi-badge">
                     <Text className="roi-text">
-                      {calculateROI(plan.amount, plan.expectedReturn)}% ROI
+                      {calculateROI(plan.amount, plan.totalMaturityAmount)}% ROI
                     </Text>
                   </div>
 
